@@ -1,6 +1,6 @@
 interface UserBanInfo {
     nickname: string;
-    reason_of_bun: string;
+    reason_of_ban: string;
 }
 
 class DB {
@@ -22,7 +22,7 @@ class DB {
     get_black_list(): UserBanInfo { // prints all nicknames of banned peoples and reason
         return {
             nickname: "",
-            reason_of_bun: "",
+            reason_of_ban: "",
         }
     }
     
