@@ -3,5 +3,5 @@ pnpm-lock.yaml
 *.pem
 *.js
 *.DS_Store
-*.env
+.env
 
