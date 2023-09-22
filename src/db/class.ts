@@ -11,7 +11,7 @@ export class DB {
     }
 
      async CheckIfUserBlacklisted(givenId: number): Promise<boolean> {
-        const uri = "mongodb+srv://cluster0.fwwvpop.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority";
+        const uri = process.env.mongodburi;
         const client = new MongoClient(uri);
       
         try {
