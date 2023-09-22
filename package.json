@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "run": "node build/index.js",
     "watch": "tsc --watch",
-    "compile": "tsc"
+    "compile": "rimraf ./build && tsc"
   },
   "keywords": [],
   "author": "",
@@ -15,10 +15,12 @@
   "dependencies": {
     "discord.js": "^14.13.0",
     "dotenv": "^16.3.1",
-    "mongodb": "^6.1.0"
+    "mongodb": "^6.1.0",
+    "tslib": "^2.6.2"
   },
   "devDependencies": {
     "@types/node": "^20.6.3",
+    "rimraf": "^5.0.1",
     "typescipt": "^1.0.0",
     "typescript": "^5.2.2"
   }

@@ -1,8 +1,10 @@
-import dotenv from "dotenv";
-import path from "path";
-import { Client,  IntentsBitField, Events, } from "discord.js";
+import * as dotenv from "dotenv";
+import * as path from "path";
+import { Client,  IntentsBitField, Events, TextChannel } from "discord.js";
 
-dotenv.config({path: __dirname})
+dotenv.config({path: path.resolve(__dirname, "..", ".env")})
+
+// console.log(path.resolve(__dirname, "..", ".env"))
 
 
 let itents = [
@@ -16,7 +18,11 @@ let itents = [
 const bot = new Client({intents: itents })
 
 bot.once(Events.MessageCreate, async c => {
-    c.channel.send("Hello")
+    if(c.channel.isTextBased()){
+        let channel: TextChannel = c.channel;
+
+        channel.send("Hello")
+    }
 })
 
 
