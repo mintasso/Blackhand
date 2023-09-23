@@ -1,5 +1,5 @@
 import { MongoClient } from 'mongodb';
-import { botClient } from '../bot/index';
+
 require('dotenv').config()
 interface UserInfo {
   userid: string;
@@ -9,56 +9,43 @@ interface UserInfo {
 }
 
 export class DB {
-   
-  
-  
-  
-  
-  
+  public client: MongoClient;
+  public uri: string;
+
+  constructor () {
+    const uri = (process.env.mongo);
+    const client = new MongoClient("mongodb+srv://DiscordBot1:T2j0iKvXuhyijT5U@cluster0.fwwvpop.mongodb.net/?retryWrites=true&w=majority");
+
+    this.uri = uri ? uri : "";
+    this.client = client;
+  }
   
   async CheckIfUserBlacklisted(givenId: string): Promise<UserInfo | null> {
-        
-      
-      const uri = (process.env.mongo);
-      const client = new MongoClient("mongodb+srv://DiscordBot1:T2j0iKvXuhyijT5U@cluster0.fwwvpop.mongodb.net/?retryWrites=true&w=majority");
-          await client.connect();
+    // const uri = (process.env.mongo);
+    // const client = new MongoClient("mongodb+srv://DiscordBot1:T2j0iKvXuhyijT5U@cluster0.fwwvpop.mongodb.net/?retryWrites=true&w=majority");
+    await this.client.connect();
     
-          const database = client.db('ExterminatorDB');
-          const collection = database.collection('Blacklist');
+    const database = this.client.db('ExterminatorDB');
+    const collection = database.collection('Blacklist');
       
-          const result = await collection.findOne({ userid: givenId }); // null - none, status 1 - listed, status 2 - banned
-		if (result) {
-			const userInfo: UserInfo = {
-				userid: result.userid,
-				reason: result.reason,
+    const result = await collection.findOne({ userid: givenId }); // null - none, status 1 - listed, status 2 - banned
+    if (result) {
+      const userInfo: UserInfo = {
+        userid: result.userid,
+        reason: result.reason,
         proof: result.proof,
-				status: result.status,
-			  }
-        console.log(userInfo)
-			  return userInfo;
-		}
-		else {
-			return null;
-		}
+        status: result.status,
+      }
+      console.log(userInfo)
+			return userInfo;
+    }
+    else {
+      return null;
+    }
   }
-     async CheckAllUsers(guildId: string) {
-    const guild = await botClient.guilds.fetch(guildId)
-    console.log(guild)
-    if (!guild) {
-      console.log("Guild not found.")
-      return;
-    }
-
-    const members = await guild.members.fetch()
-    console.log(members)
-    members.forEach((member) => {
-      const userId = member.user.id;
+  async CheckAllUsers(membersIDS: string) {
+    for (const userId of membersIDS) {
       this.CheckIfUserBlacklisted(userId);
-    });
     }
-  
-    
-
-
+  }
 }
-

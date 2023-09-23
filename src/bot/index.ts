@@ -7,26 +7,27 @@ import { DB } from '../db/class';
 export const db = new DB();
 
 
-export const botClient = new Client({intents: intents })
+export const client = new Client({intents: intents })
 
 // Adds commands to appliation and message it's online
-botClient.on("ready", async () => {
-    if (!botClient.user || !botClient.application) { 
+client.on("ready", async () => {
+    if (!client.user || !client.application) { 
         return;
     }
 
-    await botClient.application.commands.set(Commands);
+    await client.application.commands.set(Commands);
 
-    console.log(`${botClient}.user.username} is online`);
+    console.log(`${client.user.username} is online`);
 
 });
 
 // Handles slash commands
-botClient.on(Events.InteractionCreate, async interaction => {
+client.on(Events.InteractionCreate, async interaction => {
     if(interaction.isCommand() || interaction.isContextMenuCommand()) {
-        await handleSlashCommand(botClient, interaction);
+        await handleSlashCommand(client, interaction);
     }
 });
 
-botClient.login(process.env.DISCORD_TOKEN)
+
+export default client
 
