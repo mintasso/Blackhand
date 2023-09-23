@@ -1,5 +1,5 @@
 import { Client, Events, TextChannel } from "discord.js";
-import intents from "./intens";
+import intents from "./intents";
 import {Commands} from "./commands"
 import { handleSlashCommand } from "./interectionCreate";
 

@@ -1,5 +1,5 @@
 import {assert} from "chai";
-import intents from "../intens";
+import intents from "../intents";
 import { Client, Events } from "discord.js";
 
 const client = new Client({intents: intents })

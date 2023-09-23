@@ -1,5 +1,6 @@
 import { MongoClient } from 'mongodb'
-
+import * as dotenv from "dotenv";
+dotenv.config()
 
 interface ListedUser {
   reported_user: {
