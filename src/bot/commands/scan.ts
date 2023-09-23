@@ -15,9 +15,9 @@ export const Scan: Command = {
         if (guildId) {
             db.CheckAllUsers(guildId);
         } else {
-            // Handle the case where guildId is null, e.g., log an error or send a message
+            // Handle the case where guildId is null
             console.error("guildId is null");
-            // You can also send a response to the user here if needed
+
         }
     }
 }
