@@ -6,7 +6,7 @@ const client = new Client({intents: intents })
 
 
 
-describe("Channel members guid", () => {
+describe("Guild members ID pull", () => {
     it("returns members: ", (done) => {
 
         // Handles slash commands
