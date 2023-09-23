@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --require ts-node/register src/**/*.spec.ts",
+    "test-g": "mocha --require ts-node/register",
     "run": "ts-node src/index.ts",
     "watch": "tsc --watch",
     "compile": "rimraf ./build && tsc"
@@ -19,8 +20,13 @@
     "tslib": "^2.6.2"
   },
   "devDependencies": {
+    "@types/chai": "^4.3.6",
+    "@types/mocha": "^10.0.1",
     "@types/node": "^20.6.3",
+    "@types/sinon": "^10.0.16",
+    "chai": "^4.3.8",
     "rimraf": "^5.0.1",
+    "sinon": "^16.0.0",
     "ts-node": "^10.9.1",
     "typescipt": "^1.0.0",
     "typescript": "^5.2.2"
