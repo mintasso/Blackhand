@@ -2,9 +2,10 @@ import { Client, Events, TextChannel } from "discord.js";
 import intents from "./intents";
 import { Commands} from "./commands"
 import { handleSlashCommand } from "./interactionCreate";
-import { DB } from "../db/class"
+import { DB } from '../db/class';
 
 export const db = new DB();
+
 
 export const botClient = new Client({intents: intents })
 

@@ -1,6 +1,5 @@
 import { MongoClient } from 'mongodb';
 import { botClient } from '../bot/index';
-import { Nullable } from 'discord-api-types/utils/internals';
 require('dotenv').config()
 interface UserInfo {
   userid: string;
