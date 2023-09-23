@@ -1,5 +1,6 @@
 import { MongoClient } from 'mongodb';
-import { botClient } from './index';
+import { botClient } from '../bot/index';
+import { Nullable } from 'discord-api-types/utils/internals';
 require('dotenv').config()
 interface UserInfo {
   userid: string;
@@ -9,10 +10,14 @@ interface UserInfo {
 }
 
 export class DB {
-    constructor() {
-
-    }
-    async CheckIfUserBlacklisted(givenId: string): Promise<UserInfo | null> {
+   
+  
+  
+  
+  
+  
+  
+  async CheckIfUserBlacklisted(givenId: string): Promise<UserInfo | null> {
         
       
       const uri = (process.env.mongo);
@@ -36,24 +41,25 @@ export class DB {
 		else {
 			return null;
 		}
-
   }
-  async CheckAllUsers(guildId: string) {
+     async CheckAllUsers(guildId: string) {
     const guild = await botClient.guilds.fetch(guildId)
     console.log(guild)
     if (!guild) {
       console.log("Guild not found.")
       return;
     }
+
     const members = await guild.members.fetch()
     console.log(members)
     members.forEach((member) => {
       const userId = member.user.id;
       this.CheckIfUserBlacklisted(userId);
     });
+    }
+  
     
 
 
-  }
 }
 

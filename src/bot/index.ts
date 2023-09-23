@@ -1,28 +1,31 @@
 import { Client, Events, TextChannel } from "discord.js";
-import intents from "./intens";
-import {Commands} from "./commands"
-import { handleSlashCommand } from "./interectionCreate";
+import intents from "./intents";
+import { Commands} from "./commands"
+import { handleSlashCommand } from "./interactionCreate";
+import { DB } from "../db/class"
 
-const client = new Client({intents: intents })
+export const db = new DB();
+
+export const botClient = new Client({intents: intents })
 
 // Adds commands to appliation and message it's online
-client.on("ready", async () => {
-    if (!client.user || !client.application) {
+botClient.on("ready", async () => {
+    if (!botClient.user || !botClient.application) { 
         return;
     }
 
-    await client.application.commands.set(Commands);
+    await botClient.application.commands.set(Commands);
 
-    console.log(`${client.user.username} is online`);
+    console.log(`${botClient}.user.username} is online`);
 
 });
 
 // Handles slash commands
-client.on(Events.InteractionCreate, async interaction => {
+botClient.on(Events.InteractionCreate, async interaction => {
     if(interaction.isCommand() || interaction.isContextMenuCommand()) {
-        await handleSlashCommand(client, interaction);
+        await handleSlashCommand(botClient, interaction);
     }
 });
 
-export default client;
+botClient.login(process.env.DISCORD_TOKEN)
 
