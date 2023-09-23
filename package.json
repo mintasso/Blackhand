@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "run": "node build/index.js",
+    "run": "ts-node src/index.ts",
     "watch": "tsc --watch",
-    "compile": "tsc"
+    "compile": "rimraf ./build && tsc"
   },
   "keywords": [],
   "author": "",
@@ -15,7 +15,8 @@
   "dependencies": {
     "discord.js": "^14.13.0",
     "dotenv": "^16.3.1",
-    "mongodb": "^6.1.0"
+    "mongodb": "^6.1.0",
+    "tslib": "^2.6.2"
   },
   "devDependencies": {
     "@types/node": "^20.6.3",

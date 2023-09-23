@@ -12,7 +12,17 @@
       "strict": true,                                      /* Enable all strict type-checking options. */
       "moduleResolution": "node",
       "resolveJsonModule": true,
-      "sourceMap": true
+      "sourceMap": true,
+      "skipLibCheck": true,
+      "declaration": true,
     },
-    
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.json"
+    ],
+    "exclude": [
+      "node_modules"
+    ],
 }
+  
+                                  
