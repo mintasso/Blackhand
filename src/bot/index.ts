@@ -2,6 +2,7 @@ import { Client, Events, TextChannel } from "discord.js";
 import intents from "./intens";
 import {Commands} from "./commands"
 import { handleSlashCommand } from "./interectionCreate";
+import { stages } from "./stages";
 
 const client = new Client({intents: intents })
 
@@ -24,5 +25,8 @@ client.on(Events.InteractionCreate, async interaction => {
     }
 });
 
-export default client;
+
+stages(client);
+
+    export default client;
 
