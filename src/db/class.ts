@@ -19,50 +19,69 @@ interface ServerSettings {
 
 }
 
+
+const uri = process.env.MONGODB_URI
+if (!uri) {
+  console.error("MONGODB_URI environment variable is not defined.");
+  process.exit(1);
+}
+
+const client = new MongoClient(uri);
+let connectionStatus = false
+client.on('connectionReady', () => {
+  console.log("Connected to MongoDB.")
+  connectionStatus = true
+})
+client.on('connectionClosed', () => {
+  console.log("Disconnected from MongoDB")
+  connectionStatus = false
+})
+
+
 export class DB {
     constructor() {
 
     }
 
-     async CheckIfUserBlacklisted(IDsToCheck: string[]) {
-        const uri = process.env.MONGODB_URI
-        if (!uri) {
-          console.error("MONGODB_URI environment variable is not defined.");
-        } else {
-          const client = new MongoClient(uri);
-          try {
-            await client.connect();
 
+     async CheckIfUserBlacklisted(IDsToCheck: string[]) {
+        try {
+          if (!connectionStatus) {
+            await client.connect()
+          } 
+        } catch (error) {
+            console.error("Error connecting to MongoDB:", error)
+            process.exit(1)
+          }
+     
             const database = client.db("ExterminatorDB")
             const collection = database.collection('Blacklist')
 
-            const query = { "reported_user.userid": { $in: IDsToCheck } };
-            const result = await collection.find(query).toArray();
-            const listedUsers = result.map((doc) => ({
-              reported_user: {
-                user_id: doc.reported_user.userid,
-              },
-              user_who_reported: {
-                user_id: doc.user_who_reported.userid,
-              },
-              proof: doc.proof,
-              description: doc.description,
-              severity: doc.severity,
-            }));
-
-              console.log(listedUsers)
-            } catch (error) {
-              console.error("Error in CheckIfUserBlacklisted:", error);
-              return []; // Return an empty array in case of an error.
-            } finally {
-              client.close();
+            try {
+              const query = { "reported_user.userid": { $in: IDsToCheck } };
+              const result = await collection.find(query).toArray();
+              const listedUsers = result.map((doc) => ({
+                reported_user: {
+                  user_id: doc.reported_user.userid,
+                },
+                user_who_reported: {
+                  user_id: doc.user_who_reported.userid,
+                },
+                proof: doc.proof,
+                description: doc.description,
+                severity: doc.severity,
+              }));
+                return listedUsers
             }
-          }
+            catch (error) {
+              console.error("Error getting results.")
+            }
           
           }
+        
     
 
-          
+        
 
   // Adds to separate table id of server
   add_server_guid_id(guild_id: string) {
