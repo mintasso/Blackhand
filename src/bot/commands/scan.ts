@@ -19,7 +19,7 @@ export const Scan: Command = {
         });
 
         if(members) {
-            console.log(members);
+            // console.log(members);
 
             for (const member of members) {
                 if(member[1].user.displayName !== null) {

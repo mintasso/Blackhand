@@ -3,7 +3,7 @@ import intents from "../intens";
 import { Client, Events } from "discord.js";
 import * as dotenv from "dotenv";
 import * as path from "path";
-import {GetClient} from "./client.scpec";
+import {GetClient} from "./client.spec";
 import client from "..";
 
 
