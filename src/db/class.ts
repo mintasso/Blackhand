@@ -2,7 +2,7 @@ import { MongoClient } from 'mongodb'
 import * as dotenv from "dotenv";
 dotenv.config()
 
-interface ListedUser {
+export interface ListedUser {
   reported_user: {
     user_id: string;
   }
@@ -26,7 +26,7 @@ if (!uri) {
   process.exit(1);
 }
 
-const client = new MongoClient(uri);
+export const client = new MongoClient(uri);
 let connectionStatus = false
 client.on('connectionReady', () => {
   console.log("Connected to MongoDB.")
@@ -71,10 +71,11 @@ export class DB {
                 description: doc.description,
                 severity: doc.severity,
               }));
-                return listedUsers
+                return listedUsers;
             }
             catch (error) {
               console.error("Error getting results.")
+              process.exit(1)
             }
           
           }
