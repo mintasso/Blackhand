@@ -1,5 +1,6 @@
-import { MongoClient } from "mongodb";
+import { IntegerType, MongoClient } from "mongodb";
 import * as dotenv from "dotenv";
+import internal from "stream";
 dotenv.config();
 
 export interface ListedUser {
@@ -120,14 +121,32 @@ export class DB {
     return;
   }
 
-  // You should add similar function to it for each key from ServerSettings
-  // You can write just one function with if or case handlers
-  add_way_of_communication_with_users_from_blacklist(
-    server_id: string,
-    way: string
-  ) {
-    // For example
-    // change_server_setting(server_id, "add_way_of_communication_with_users_from_blacklist", way)
+  async change_server_settings(guild_id: string, warn_at: number, ban_at: number, autoban: boolean ) {
+    const currentServerSettings = this.get_server_settings(guild_id)
+      try {
+        if (!connectionStatus) {
+          await client.connect();
+        }
+      } catch (error) {
+        console.error("Error connecting to MongoDB:", error);
+        process.exit(1);
+      }
+
+      const database = client.db("ExterminatorDB");
+      const collection = database.collection("ServerSettings");
+
+      const update = {
+        $set: {
+          warn_at: warn_at,
+          ban_at: ban_at,
+          autoban: autoban
+        }
+      };
+      // add prompt to verify the changes by showing old and new configs
+
+      
+    
+
   }
 
   // change_server_setting(server_id:string, i: string value: string) {
