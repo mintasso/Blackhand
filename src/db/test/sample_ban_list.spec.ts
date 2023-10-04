@@ -4,8 +4,8 @@ import { DB, ListedUser, client } from '../class';
 const db = new DB();
 dotenv.config();
 
-describe('MongoDB Data Pull Test', () => {
-  it('should retrieve sample data from MongoDB', async () => {
+describe('MongoDB Ban List Pull Test', () => {
+  it('should retrieve sample listed user data from MongoDB', async () => {
     const IDsToCheck = ["1154858064722272277", "864605650020597770", "1154858064722272277", "1154859541503152318"];
     var result = await db.CheckIfUserBlacklisted(IDsToCheck);
     const expectedData = [

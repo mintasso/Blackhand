@@ -1,7 +1,7 @@
 import { Client, Events, TextChannel } from "discord.js";
 import intents from "./intents";
 import {Commands} from "./commands"
-import { handleSlashCommand } from "./interectionCreate";
+import { handleSlashCommand } from "./interactionCreate";
 
 const client = new Client({intents: intents })
 
