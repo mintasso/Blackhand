@@ -2,6 +2,8 @@ import { Client, Events, TextChannel } from "discord.js";
 import intents from "./intents";
 import {Commands} from "./commands"
 import { handleSlashCommand } from "./interactionCreate";
+import { stages } from "./stages";
+import { table } from "./stages/current_statement";
 
 const client = new Client({intents: intents })
 
@@ -19,10 +21,16 @@ client.on("ready", async () => {
 
 // Handles slash commands
 client.on(Events.InteractionCreate, async interaction => {
+    if(interaction.user.bot) return;
     if(interaction.isCommand() || interaction.isContextMenuCommand()) {
+        if(table.get_user_statement(interaction.user.id).current_position[0] > 0 
+        && interaction.commandName !== "back") return;
         await handleSlashCommand(client, interaction);
     }
 });
+
+
+stages(client);
 
 export default client;
 

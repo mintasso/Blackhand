@@ -10,6 +10,8 @@ export const Scan: Command = {
 
         const id = i.guildId;
 
+        console.log("server_id: ", id)
+
         const members = await i.guild?.members.fetch();
         await i.followUp({
             ephemeral: true,
@@ -17,12 +19,11 @@ export const Scan: Command = {
         });
 
         if(members) {
-            console.log(members);
+            // console.log(members);
 
             for (const member of members) {
-                console.log(member[0]);
                 if(member[1].user.displayName !== null) {
-                    i.channel?.send(member[1].user.displayName);
+                    console.log(`${member[1].user.displayName}:${member[1].user.id}`);
                 }
             }
         }
