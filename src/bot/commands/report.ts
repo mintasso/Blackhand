@@ -12,7 +12,7 @@ export const Report: Command = {
         const user = i.options.getUser("username")
         if(!user) {console.log("Error"); return}
         if(user.bot) {
-            await i.followUp({ephemeral: true, content: "It is bot"});
+            await i.followUp({ephemeral: true, content: "You can't report a bot."});
             return;
         }
         await i.followUp({
