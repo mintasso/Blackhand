@@ -1,11 +1,10 @@
 import { Client, CommandInteraction, EmbedBuilder, UserSelectMenuBuilder } from "discord.js"; // Import MessageEmbed from discord.js
 import { Command } from "./command";
 import { db } from "../../index";
-import { serverSettings } from "../../db/class";
 
 export const Scan: Command = {
   name: "scan",
-  description: "Scans channel",
+  description: "Scans the server for listed users.",
   run: async (client: Client, i: CommandInteraction) => {
     const id = i.guildId;
     const members = await i.guild?.members.fetch();
