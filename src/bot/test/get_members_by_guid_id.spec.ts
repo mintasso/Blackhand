@@ -1,5 +1,5 @@
 import {assert} from "chai";
-import intents from "../intens";
+import intents from "../intents";
 import { Client, Events } from "discord.js";
 import * as dotenv from "dotenv";
 import * as path from "path";
@@ -12,7 +12,7 @@ import client from "..";
     describe("Gets members by channel id", function () {
         this.timeout(10000);
 
-        const client  = GetClient()
+        const client = GetClient()
         
         it("returns boolean (members)", (done) => {
             client.once("ready", async () => {

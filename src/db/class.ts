@@ -40,7 +40,7 @@ client.on("connectionClosed", () => {
 export class DB {
   constructor() {}
 
-  async CheckIfUserBlacklisted(IDsToCheck: string[]) {
+  async CheckIfUserBlacklisted(IDsToCheck: string[]): Promise<ListedUser[]> {
     try {
       if (!connectionStatus) {
         await client.connect();
@@ -50,7 +50,7 @@ export class DB {
       process.exit(1);
     }
 
-    const database = client.db("ExterminatorDB");
+    const database = client.db("BlackhandDB");
     const collection = database.collection("Blacklist");
 
     try {
@@ -74,12 +74,9 @@ export class DB {
     }
   }
 
-  // Adds to separate table id of server
+  // add_new_banned_user(info: ListedUser) {}
 
-  add_new_banned_user(info: ListedUser) {}
-
-  // Creates server settings row (object in NOSQL) and adds server_id other values just undefined
-  async get_server_settings(guild_id: string) {
+  async get_server_settings(guild_id: string): Promise<serverSettings>{
     try {
       if (!connectionStatus) {
         await client.connect();
@@ -88,65 +85,63 @@ export class DB {
       console.error("Error connecting to MongoDB:", error);
       process.exit(1);
     }
-    const database = client.db("ExterminatorDB");
+    const database = client.db("BlackhandDB");
     const collection = database.collection("ServerSettings");
-
+    const result = await collection.findOne({ guild_id: guild_id });
     try {
       const query = { guild_id: guild_id };
-      const result = await collection.find(query).toArray();
-      if (result.length === 0) {
-        console.log("Creating a new document...")
+
+      if (!result) {
+        console.log("Creating a new document...");
         const serverSettings = {
           // default values
-          guild_id: guild_id,
           warn_at: 3,
           ban_at: 7,
           autoban: true,
         };
         await collection.insertOne(serverSettings);
-        return result
+        return serverSettings;
+      } else {
+        const serverSettings = {
+          warn_at: result.warn_at,
+          ban_at: result.ban_at,
+          autoban: result.autoban
+        }
+        return serverSettings
       }
-      else {
-      const serverSettings = result.map((doc) => ({
-        warn_at: doc.warn_at,
-        ban_at: doc.ban_at,
-        autoban: doc.autoban,
-      }));
-      return serverSettings;
-    }
     } catch (error) {
       console.error("Error in MongoDB.");
       process.exit(1);
     }
-    return;
   }
 
-  async change_server_settings(guild_id: string, warn_at: number, ban_at: number, autoban: boolean ) {
-    const currentServerSettings = this.get_server_settings(guild_id)
-      try {
-        if (!connectionStatus) {
-          await client.connect();
-        }
-      } catch (error) {
-        console.error("Error connecting to MongoDB:", error);
-        process.exit(1);
+  async change_server_settings(
+    guild_id: string,
+    warn_at: number,
+    ban_at: number,
+    autoban: boolean
+  ) {
+    const currentServerSettings = this.get_server_settings(guild_id);
+    try {
+      if (!connectionStatus) {
+        await client.connect();
       }
+    } catch (error) {
+      console.error("Error connecting to MongoDB:", error);
+      process.exit(1);
+    }
 
-      const database = client.db("ExterminatorDB");
-      const collection = database.collection("ServerSettings");
+    const database = client.db("BlackhandDB");
+    const collection = database.collection("ServerSettings");
 
-      const update = {
-        $set: {
-          warn_at: warn_at,
-          ban_at: ban_at,
-          autoban: autoban
-        }
-      };
-      // add prompt to verify the changes by showing old and new configs
-
-      
-    
-
+    const update = {
+      $set: {
+        warn_at: warn_at,
+        ban_at: ban_at,
+        autoban: autoban,
+      },
+    };
+    // add prompt to verify the changes by showing old and new configs
   }
 
   // change_server_setting(server_id:string, i: string value: string) {

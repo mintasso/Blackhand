@@ -1,5 +1,5 @@
 import {assert} from "chai";
-import intents from "../intens";
+import intents from "../intents";
 import { Client, Events } from "discord.js";
 import * as dotenv from "dotenv";
 import * as path from "path";
