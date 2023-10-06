@@ -1,4 +1,9 @@
-import { Client, CommandInteraction, EmbedBuilder, UserSelectMenuBuilder } from "discord.js"; // Import MessageEmbed from discord.js
+import {
+  Client,
+  CommandInteraction,
+  EmbedBuilder,
+  UserSelectMenuBuilder,
+} from "discord.js"; // Import MessageEmbed from discord.js
 import { Command } from "./command";
 import { db } from "../../index";
 
@@ -20,9 +25,9 @@ export const Scan: Command = {
         const serverSettings = await db.get_server_settings(
           "1154857944744210484"
         );
-        let foundUsers: number = 0
-        let warnedUsers: number = 0
-        let bannedUsers: number = 0
+        let foundUsers: number = 0;
+        let warnedUsers: number = 0;
+        let bannedUsers: number = 0;
         for (const listedUser of result) {
           if (listedUser.severity >= serverSettings.ban_at) {
             if (serverSettings.autoban) {
@@ -49,41 +54,49 @@ export const Scan: Command = {
                     },
                     // timestamp: 1696615776561,
                   },
-
-                ]})
+                ],
+              });
             } else {
               i.followUp({
-              embeds: [
-                {
-                  author: {
-                    name: "User name",
-                    icon_url: "https://google.com",
+                embeds: [
+                  {
+                    author: {
+                      name: "User name",
+                      icon_url: "https://google.com",
+                    },
+                    title: "Blacklisted user found!",
+                    description:
+                      "**Last known usernames**:" + // last known usernames +
+                      "\n**User ID: **" +
+                      listedUser.reported_user.user_id +
+                      "\n**Severity: **" +
+                      listedUser.severity +
+                      "\n**Description: **\n ```" +
+                      listedUser.description +
+                      "```" + // description in code blocks
+                      "\n<@" +
+                      listedUser.reported_user.user_id +
+                      ">" + // tag the user
+                      "\n\n[Blackhand Page](https://example.com)" +
+                      "\n\n**Proof: **" +
+                      listedUser.proof,
+                    image: {
+                      url: "https://google.com",
+                    },
+                    thumbnail: {
+                      url: "https://google.com",
+                    },
+                    // color: "#e32400",
+                    footer: {
+                      text: "Blackhand",
+                      icon_url: "https://google.com",
+                    },
+                    // timestamp: 1696615776561,
                   },
-                  title: "Blacklisted user found!",
-                  description:
-                    "**Last known usernames**:" + // last known usernames +
-                    "\n**User ID: **" + listedUser.reported_user.user_id +
-                    "\n**Severity: **" + listedUser.severity +
-                    "\n**Description: **\n ```" + listedUser.description + "```" + // description in code blocks
-                    "\n<@" + listedUser.reported_user.user_id + ">" + // tag the user
-                    "\n\n[Blackhand Page](https://example.com)" +
-                    "\n\n**Proof: **" + listedUser.proof,
-                  image: {
-                    url: "https://google.com",
-                  },
-                  thumbnail: {
-                    url: "https://google.com",
-                  },
-                  // color: "#e32400",
-                  footer: {
-                    text: "Blackhand",
-                    icon_url: "https://google.com",
-                  },
-                  // timestamp: 1696615776561,
-                },
-              ]})
+                ],
+              });
             }
-            bannedUsers =+ 1
+            bannedUsers = +1;
           } else if (listedUser.severity >= serverSettings.warn_at) {
             i.followUp({
               embeds: [
@@ -95,12 +108,19 @@ export const Scan: Command = {
                   title: "WARNING! User found!",
                   description:
                     "**Last known usernames**:" + // last known usernames +
-                    "\n**User ID: **" + listedUser.reported_user.user_id +
-                    "\n**Severity: **" + listedUser.severity +
-                    "\n**Description: **\n ```" + listedUser.description + "```" + // description in code blocks
-                    "\n<@" + listedUser.reported_user.user_id + ">" + // tag the user
+                    "\n**User ID: **" +
+                    listedUser.reported_user.user_id +
+                    "\n**Severity: **" +
+                    listedUser.severity +
+                    "\n**Description: **\n ```" +
+                    listedUser.description +
+                    "```" + // description in code blocks
+                    "\n<@" +
+                    listedUser.reported_user.user_id +
+                    ">" + // tag the user
                     "\n\n[Blackhand Page](https://example.com)" +
-                    "\n\n**Proof: **" + listedUser.proof,
+                    "\n\n**Proof: **" +
+                    listedUser.proof,
                   image: {
                     url: "https://google.com",
                   },
@@ -114,12 +134,21 @@ export const Scan: Command = {
                   },
                   // timestamp: 1696615776561,
                 },
-              ]})
-            warnedUsers =+ 1
+              ],
+            });
+            warnedUsers = +1;
           }
-          foundUsers =+ 1
+          foundUsers = +1;
         }
-        i.editReply("__**Found " + foundUsers + " users of which " + bannedUsers + " are blacklisted and " + warnedUsers + " are warned against according to server settings.**__")
+        i.editReply(
+          "__**Found " +
+            foundUsers +
+            " users of which " +
+            bannedUsers +
+            " are blacklisted and " +
+            warnedUsers +
+            " are warned against according to server settings.**__"
+        );
       }
     }
   },

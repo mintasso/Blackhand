@@ -76,7 +76,7 @@ export class DB {
 
   // add_new_banned_user(info: ListedUser) {}
 
-  async get_server_settings(guild_id: string): Promise<serverSettings>{
+  async get_server_settings(guild_id: string): Promise<serverSettings> {
     try {
       if (!connectionStatus) {
         await client.connect();
@@ -105,9 +105,9 @@ export class DB {
         const serverSettings = {
           warn_at: result.warn_at,
           ban_at: result.ban_at,
-          autoban: result.autoban
-        }
-        return serverSettings
+          autoban: result.autoban,
+        };
+        return serverSettings;
       }
     } catch (error) {
       console.error("Error in MongoDB.");

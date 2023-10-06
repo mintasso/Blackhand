@@ -1,15 +1,14 @@
-import {IntentsBitField} from "discord.js";
+import { IntentsBitField } from "discord.js";
 
 // Intents
 const intents = [
-    IntentsBitField.Flags.Guilds, 
-    IntentsBitField.Flags.GuildMessages,
-    IntentsBitField.Flags.DirectMessages,
-    IntentsBitField.Flags.GuildMembers,
-    // IntentsBitField.Flags.GuildIntegrations,
-    // IntentsBitField.Flags.GuildMembers,
-    // IntentsBitField.Flags.GuildModeration,
-]
-
+  IntentsBitField.Flags.Guilds,
+  IntentsBitField.Flags.GuildMessages,
+  IntentsBitField.Flags.DirectMessages,
+  IntentsBitField.Flags.GuildMembers,
+  // IntentsBitField.Flags.GuildIntegrations,
+  // IntentsBitField.Flags.GuildMembers,
+  // IntentsBitField.Flags.GuildModeration,
+];
 
 export default intents;
