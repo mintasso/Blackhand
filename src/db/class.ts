@@ -1,6 +1,5 @@
-import { IntegerType, MongoClient } from "mongodb";
+import { MongoClient } from "mongodb";
 import * as dotenv from "dotenv";
-import internal from "stream";
 dotenv.config();
 
 export interface ListedUser {
@@ -89,8 +88,6 @@ export class DB {
     const collection = database.collection("ServerSettings");
     const result = await collection.findOne({ guild_id: guild_id });
     try {
-      const query = { guild_id: guild_id };
-
       if (!result) {
         console.log("Creating a new document...");
         const serverSettings = {
@@ -121,7 +118,6 @@ export class DB {
     ban_at: number,
     autoban: boolean
   ) {
-    const currentServerSettings = this.get_server_settings(guild_id);
     try {
       if (!connectionStatus) {
         await client.connect();
@@ -133,6 +129,7 @@ export class DB {
 
     const database = client.db("BlackhandDB");
     const collection = database.collection("ServerSettings");
+    const query = { guild_id: guild_id };
 
     const update = {
       $set: {
@@ -141,6 +138,7 @@ export class DB {
         autoban: autoban,
       },
     };
+    collection.updateOne(query, update)
     // add prompt to verify the changes by showing old and new configs
   }
 

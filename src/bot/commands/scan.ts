@@ -1,9 +1,8 @@
 import {
   Client,
   CommandInteraction,
-  EmbedBuilder,
   UserSelectMenuBuilder,
-} from "discord.js"; // Import MessageEmbed from discord.js
+} from "discord.js";
 import { Command } from "./command";
 import { db } from "../../index";
 
@@ -38,7 +37,7 @@ export const Scan: Command = {
                       name: "User name",
                       icon_url: "https://google.com",
                     },
-                    title: "Blacklisted user found!",
+                    title: "Blacklisted user found! Banning now...",
                     description:
                       "_**Last known usernames**_:\n_**User ID:**_${listedUser.reported_user.userid}\n_**Severity**_: // severity\n_**Description:**_:\n```\ndescription\n```\n<@123>\n\n[Blackhand Page](https://example.com)\n\n_**Proof:**_",
                     image: {

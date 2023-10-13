@@ -5,3 +5,4 @@ package-lock.json
 *.pem
 *.js
 *.env
+*.DS_Store

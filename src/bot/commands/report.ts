@@ -22,7 +22,7 @@ export const Report: Command = {
     if (i.user.bot) return;
     const user = i.options.getUser("username");
     if (!user) {
-      console.log("Error");
+      await i.followUp({ ephemeral: true, content: "User does not exist." })
       return;
     }
     if (user.bot) {
