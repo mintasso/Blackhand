@@ -1,4 +1,4 @@
-import { Client, Interaction, Message } from "discord.js";
+import { Attachment, Client, Interaction, Message } from "discord.js";
 import { CurrentStatement } from "./current_statement";
 import {writeFile} from "fs"
 import { FileOrganizer } from "../get_file";
@@ -19,12 +19,27 @@ async function get_json_object(url: string) {
 async function warn_at_stage(client: Client, i: Message, statement: CurrentStatement) {
     switch(statement.current_position[1]) {
         case 0:
+            if(i.attachments.size <= 0) {
+                i.reply("No file provided");
+                return;
+            }
+
+            let json;
            for(const attachment_ of i.attachments) {
             const attachment = attachment_[1]
 
-            if(attachment.name !== "template.json") continue;
+            console.log(attachment.contentType)
+
+            if(attachment.name !== "application/json") continue;
 
             console.log(await get_json_object(attachment.url));
+
+            break;
+           }
+
+           if(!json) {
+            i.reply("File with wrong extension or empty file")
+            return;
            }
 
 
