@@ -1,6 +1,7 @@
 import { ApplicationCommandOptionType, Client, CommandInteraction, MessageCollector } from "discord.js";
 import { Command } from "./command";
 import { table } from "../stages/current_statement";
+import { send_message_in_pv } from "../helper";
 
 export const Report: Command = {
     name: "report",
@@ -15,9 +16,9 @@ export const Report: Command = {
             await i.followUp({ephemeral: true, content: "It is bot"});
             return;
         }
-        await i.followUp({
-            ephemeral: true,
-            content: `${i.options.getUser("username")?.username}`,
+        await i.followUp({ephemeral: false, content: "Continue in private chat"});
+        await send_message_in_pv(client, i, {
+            content: "Please, provide descripion of report",
         })
         table.get_user_statement(i.user.id).current_position = [1, 0];
     }

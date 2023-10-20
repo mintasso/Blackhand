@@ -6,6 +6,7 @@ const intents = [
     IntentsBitField.Flags.GuildMessages,
     IntentsBitField.Flags.DirectMessages,
     IntentsBitField.Flags.GuildMembers,
+    IntentsBitField.Flags.MessageContent,
     // IntentsBitField.Flags.GuildIntegrations,
     // IntentsBitField.Flags.GuildMembers,
     // IntentsBitField.Flags.GuildModeration,
