@@ -1,24 +1,23 @@
-import {assert} from "chai";
-import intents from "../intens";
+import { assert } from "chai";
+import intents from "../intents";
 import { Client, Events } from "discord.js";
+import * as dotenv from "dotenv";
+import * as path from "path";
+import { GetClient } from "./client.spec";
 
-const client = new Client({intents: intents })
+describe("Getting username by user_id", function () {
+  this.timeout(10000);
+  const IDtoFetch: string = "1154858064722272277";
+  const client = GetClient();
+  it("returns the string (user_id): ", (done) => {
+    client.once("ready", async () => {
+      const user = await client.users.fetch(IDtoFetch);
+      const username = user.username;
 
-
-
-describe("Channel members guid", () => {
-    it("returns members: ", (done) => {
-
-        // Handles slash commands
-    client.on(Events.InteractionCreate, async interaction => {
-        
+      assert.isString(username);
+      await client.destroy();
+      done();
     });
-    client.login(process.env.TOKEN)
+    client.my_login();
+  });
 });
-
-
-
-
-
-
-

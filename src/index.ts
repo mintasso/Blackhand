@@ -1,8 +1,8 @@
 import * as dotenv from "dotenv";
-import * as path from "path";
 import bot from "./bot";
+import { DB } from "./db/class";
+dotenv.config();
 
-dotenv.config({path: path.resolve(__dirname, "..", ".env")});
+export const db = new DB();
 
-bot.login(process.env.TOKEN)
-
+bot.login(process.env.TOKEN);
