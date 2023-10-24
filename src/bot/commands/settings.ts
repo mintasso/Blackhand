@@ -1,71 +1,20 @@
-import {
-    Client,
-    CommandInteraction,
-    UserSelectMenuBuilder,
-  } from "discord.js";
+import { ActionRow, ActionRowBuilder, ApplicationCommandOptionType, ButtonBuilder, ButtonStyle, Client, CommandInteraction, MessageActionRowComponent, MessageCollector } from "discord.js";
 import { Command } from "./command";
-import { db } from "../../index";
-import { serverSettings } from "../../db/class";
+import { table } from "../stages/current_statement";
+import { send_message_in_pv } from "../helper";
 
+import { settings_row } from "../m";
 
 export const Settings: Command = {
     name: "settings",
-    description: "get current server settings (TEST)",
+    description: "Set up",
     run: async (client: Client, i: CommandInteraction) => {
-        const guildid = "1154857944744210484"
-        const warn_at = 1
-        const ban_at = 3
-        const autoban = true
+        console.log("aaaderer")
+
         await i.followUp({
-          ephemeral: true,
-          content: "Getting current settings...",
+            content: "Choose option",
+            ephemeral: true,
+            components: [settings_row]
         });
-        
-        let serverSettings = await db.get_server_settings(guildid)
-
-        i.followUp({
-            embeds: [
-            {
-              title: "Current server settings:",
-              description:
-                "\n**Warn at: **" +
-                serverSettings.warn_at +
-                "\n**Ban at: **" +
-                serverSettings.ban_at +
-                "\n**Autoban: **" +
-                serverSettings.autoban,
-              // color: "#e32400",
-              footer: {
-                text: "Blackhand",
-                icon_url: "https://google.com",
-              },
-              // timestamp: 1696615776561,
-             
-            },
-          ],
-        });
-        await db.change_server_settings(guildid, warn_at, ban_at, autoban)
-        serverSettings = await db.get_server_settings(guildid)
-        i.followUp({
-            embeds: [
-            {
-              title: "New server settings:",
-              description:
-                "\n**Warn at: **" +
-                serverSettings.warn_at +
-                "\n**Ban at: **" +
-                serverSettings.ban_at +
-                "\n**Autoban: **" +
-                serverSettings.autoban,
-              // color: "#e32400",
-              footer: {
-                text: "Blackhand",
-                icon_url: "https://google.com",
-              },
-              // timestamp: 1696615776561,
-            
-            },
-          ],
-        });
-
-}}
+    }
+}

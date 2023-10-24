@@ -1,5 +1,6 @@
 node_modules/
 build/
+files/
 pnpm-lock.yaml
 package-lock.json
 *.pem
