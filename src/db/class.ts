@@ -1,55 +1,34 @@
-import { MongoClient } from "mongodb";
+import { MongoClient, ServerSession } from "mongodb";
 import * as dotenv from "dotenv";
+import { ListedUser, serverSettings } from "./interfaces";
 dotenv.config();
 
-export interface ListedUser {
-  reported_user: {
-    user_id: string;
-  };
-  user_who_reported: {
-    user_id: string;
-  };
-  proof: string[];
-  description: string;
-  severity: number;
-}
 
-export interface serverSettings {
-  warn_at: number;
-  ban_at: number;
-  autoban: boolean;
-}
+const uri = process.env.MONGODB_URI as string;
 
-const uri = process.env.MONGODB_URI;
 if (!uri) {
   console.error("MONGODB_URI environment variable is not defined.");
   process.exit(1);
 }
 
-export const client = new MongoClient(uri);
-let connectionStatus = false;
-client.on("connectionReady", () => {
-  console.log("Connected to MongoDB.");
-  connectionStatus = true;
-});
-client.on("connectionClosed", () => {
-  console.log("Disconnected from MongoDB");
-  connectionStatus = false;
-});
+
+
 export class DB {
-  constructor() {}
+  private  client: MongoClient;
+  constructor() {
+    const client = new MongoClient(uri, {
+      maxPoolSize: 5,
+    });
+
+    this.client = client;
+  }
+
+  async connect() {
+    await this.client.connect()
+  }
 
   async CheckIfUserBlacklisted(IDsToCheck: string[]): Promise<ListedUser[]> {
-    try {
-      if (!connectionStatus) {
-        await client.connect();
-      }
-    } catch (error) {
-      console.error("Error connecting to MongoDB:", error);
-      process.exit(1);
-    }
-
-    const database = client.db("BlackhandDB");
+    const database = this.client.db("BlackhandDB");
     const collection = database.collection("Blacklist");
 
     try {
@@ -76,28 +55,21 @@ export class DB {
   // add_new_banned_user(info: ListedUser) {}
 
   async get_server_settings(guild_id: string): Promise<serverSettings> {
-    try {
-      if (!connectionStatus) {
-        await client.connect();
-      }
-    } catch (error) {
-      console.error("Error connecting to MongoDB:", error);
-      process.exit(1);
-    }
-    const database = client.db("BlackhandDB");
+
+    const database = this.client.db("BlackhandDB");
     const collection = database.collection("ServerSettings");
     const result = await collection.findOne({ guild_id: guild_id });
     try {
       if (!result) {
         console.log("Creating a new document...");
-        const serverSettings = {
+        const serverSettings_:serverSettings = {
           // default values
-          warn_at: 3,
-          ban_at: 7,
+          warn_at: [7],
+          ban_at: [7],
           autoban: true,
         };
-        await collection.insertOne(serverSettings);
-        return serverSettings;
+        await collection.insertOne(serverSettings_);
+        return serverSettings_;
       } else {
         const serverSettings = {
           warn_at: result.warn_at,
@@ -114,29 +86,15 @@ export class DB {
 
   async change_server_settings(
     guild_id: string,
-    warn_at: number,
-    ban_at: number,
-    autoban: boolean
+    server_settings: serverSettings
   ) {
-    try {
-      if (!connectionStatus) {
-        await client.connect();
-      }
-    } catch (error) {
-      console.error("Error connecting to MongoDB:", error);
-      process.exit(1);
-    }
 
-    const database = client.db("BlackhandDB");
+    const database = this.client.db("BlackhandDB");
     const collection = database.collection("ServerSettings");
     const query = { guild_id: guild_id };
 
     const update = {
-      $set: {
-        warn_at: warn_at,
-        ban_at: ban_at,
-        autoban: autoban,
-      },
+      $set: server_settings,
     };
     collection.updateOne(query, update)
     // add prompt to verify the changes by showing old and new configs
