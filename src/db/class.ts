@@ -1,6 +1,7 @@
 import { MongoClient, ServerSession } from "mongodb";
 import * as dotenv from "dotenv";
-import { ListedUser, serverSettings } from "./interfaces";
+import { serverSettings } from "./interfaces";
+import * as mongoose from "mongoose";
 dotenv.config();
 
 
@@ -13,43 +14,27 @@ if (!uri) {
 
 
 
+class Client {
+  public client : mongoose.Mongoose | undefined;
+
+}
+
+export const client = new Client()
+
+
 export class DB {
-  private  client: MongoClient;
+  private client: mongoose.Mongoose; //MongoClient;
+  
   constructor() {
-    const client = new MongoClient(uri, {
-      maxPoolSize: 5,
-    });
-
-    this.client = client;
+    if(client.client === undefined) throw new Error("mongoose connect unsucsesfull");
+    this.client = client.client;
   }
 
-  async connect() {
-    await this.client.connect()
-  }
 
-  async CheckIfUserBlacklisted(IDsToCheck: string[]): Promise<ListedUser[]> {
-    const database = this.client.db("BlackhandDB");
-    const collection = database.collection("Blacklist");
+  async is_user_blacklisted(user_id: string) {
+    
+    model.is_user_blacklisted
 
-    try {
-      const query = { "reported_user.userid": { $in: IDsToCheck } };
-      const result = await collection.find(query).toArray();
-      const listedUsers = result.map((doc) => ({
-        reported_user: {
-          user_id: doc.reported_user.userid,
-        },
-        user_who_reported: {
-          user_id: doc.user_who_reported.userid,
-        },
-        proof: doc.proof,
-        description: doc.description,
-        severity: doc.severity,
-      }));
-      return listedUsers;
-    } catch (error) {
-      console.error("Error getting results.");
-      process.exit(1);
-    }
   }
 
   // add_new_banned_user(info: ListedUser) {}

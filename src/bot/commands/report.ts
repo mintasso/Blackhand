@@ -26,7 +26,7 @@ export const Report: Command = {
             content: "Please, provide descripion of report",
         })
         table.get_user_statement(i.user.id).current_position = [1, 0];
-    }
+    
     if (user.bot) {
       await i.followUp({ ephemeral: true, content: "You can't report a bot." });
       return;

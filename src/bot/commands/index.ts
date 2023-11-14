@@ -5,4 +5,4 @@ import { Back } from "./back";
 import { Settings } from "./settings";
 
 
-export const Commands: Command[] = [Scan, Report, Back, Settings];
+export const Commands: Command[] = [ Report, Back, Settings];

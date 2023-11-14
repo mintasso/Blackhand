@@ -1,8 +1,11 @@
 import * as dotenv from "dotenv";
 import bot from "./bot";
-import { DB } from "./db/class";
+import { DB, client } from "./db/class";
+import {connect} from "mongoose";
 dotenv.config();
 
-export const db = new DB();
+(async () => {
+    client.client = await connect("localhost:27017/extreminator");
 
-bot.login(process.env.TOKEN);
+    bot.login(process.env.TOKEN);
+})()
