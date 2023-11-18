@@ -18,8 +18,7 @@
     "dotenv": "^16.3.1",
     "mocha": "^10.2.0",
     "mongodb": "^6.1.0",
-    "tslib": "^2.6.2",
-    "uuid": "^9.0.1"
+    "tslib": "^2.6.2"
   },
   "devDependencies": {
     "@types/chai": "^4.3.6",
@@ -27,7 +26,6 @@
     "@types/mongodb": "^4.0.7",
     "@types/node": "^20.6.3",
     "@types/sinon": "^10.0.16",
-    "@types/uuid": "^9.0.5",
     "chai": "^4.3.8",
     "mocha": "^10.2.0",
     "rimraf": "^5.0.1",

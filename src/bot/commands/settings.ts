@@ -1,20 +1,71 @@
-import { ActionRow, ActionRowBuilder, ApplicationCommandOptionType, ButtonBuilder, ButtonStyle, Client, CommandInteraction, MessageActionRowComponent, MessageCollector } from "discord.js";
+import {
+    Client,
+    CommandInteraction,
+    UserSelectMenuBuilder,
+  } from "discord.js";
 import { Command } from "./command";
-import { table } from "../stages/current_statement";
-import { send_message_in_pv } from "../helper";
+import { db } from "../../index";
+import { serverSettings } from "../../db/class";
 
-import { settings_row } from "../m";
 
 export const Settings: Command = {
     name: "settings",
-    description: "Set up",
+    description: "get current server settings (TEST)",
     run: async (client: Client, i: CommandInteraction) => {
-        console.log("aaaderer")
-
+        const guildid = "1154857944744210484"
+        const warn_at = 1
+        const ban_at = 3
+        const autoban = true
         await i.followUp({
-            content: "Choose option",
-            ephemeral: true,
-            components: [settings_row]
+          ephemeral: true,
+          content: "Getting current settings...",
         });
-    }
-}
+        
+        let serverSettings = await db.get_server_settings(guildid)
+
+        i.followUp({
+            embeds: [
+            {
+              title: "Current server settings:",
+              description:
+                "\n**Warn at: **" +
+                serverSettings.warn_at +
+                "\n**Ban at: **" +
+                serverSettings.ban_at +
+                "\n**Autoban: **" +
+                serverSettings.autoban,
+              // color: "#e32400",
+              footer: {
+                text: "Blackhand",
+                icon_url: "https://google.com",
+              },
+              // timestamp: 1696615776561,
+             
+            },
+          ],
+        });
+        await db.change_server_settings(guildid, warn_at, ban_at, autoban)
+        serverSettings = await db.get_server_settings(guildid)
+        i.followUp({
+            embeds: [
+            {
+              title: "New server settings:",
+              description:
+                "\n**Warn at: **" +
+                serverSettings.warn_at +
+                "\n**Ban at: **" +
+                serverSettings.ban_at +
+                "\n**Autoban: **" +
+                serverSettings.autoban,
+              // color: "#e32400",
+              footer: {
+                text: "Blackhand",
+                icon_url: "https://google.com",
+              },
+              // timestamp: 1696615776561,
+            
+            },
+          ],
+        });
+
+}}
