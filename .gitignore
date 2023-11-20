@@ -6,3 +6,5 @@ package-lock.json
 *.js
 *.env
 *.DS_Store
+settings.json
+blacklist.json

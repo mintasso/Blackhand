@@ -1,113 +1,99 @@
-import { MongoClient } from "mongodb";
-import * as dotenv from "dotenv";
-dotenv.config();
+import { serverSettings, ListedUser } from "./interfaces";
+import * as fs from "fs";
+import * as path from "path";
+import * as prettier from "prettier";
+const settingsfile = path.join(__dirname, "settings.json");
+const blacklistfile = path.join(__dirname, "blacklist.json");
 
-export interface ListedUser {
-  reported_user: {
-    user_id: string;
-  };
-  user_who_reported: {
-    user_id: string;
-  };
-  proof: string[];
-  description: string;
-  severity: number;
+async function readFile(whichfile: string) {
+  try {
+    if (!(whichfile === "settingsfile" || "blacklistfile")) {
+      console.error("Wrong type of file to check given.");
+      process.exit(1);
+    }
+    if (
+      !fs.existsSync(whichfile) ||
+      fs.readFileSync(whichfile, "utf-8").length === 0
+    ) {
+      console.log(
+        whichfile,
+        " doesn't exist or is empty. Creating a new document."
+      );
+      fs.writeFileSync(whichfile, JSON.stringify([]), "utf-8");
+      return [];
+    }
+    return JSON.parse(fs.readFileSync(whichfile, "utf-8"));
+  } catch (err) {
+    console.error("Error: ", err);
+    process.exit(1);
+  }
 }
 
-export interface serverSettings {
-  warn_at: number;
-  ban_at: number;
-  autoban: boolean;
+async function writeFile(whichfile: string, newdata: any) {
+  try {
+    const data = await prettier.format(
+      JSON.stringify((await readFile(whichfile)).concat(newdata)),
+      { parser: "json" }
+    );
+
+    fs.writeFileSync(whichfile, data, "utf-8");
+  } catch (err) {
+    console.error("Error writing to file: ", err);
+    process.exit(1);
+  }
 }
 
-const uri = process.env.MONGODB_URI;
-if (!uri) {
-  console.error("MONGODB_URI environment variable is not defined.");
-  process.exit(1);
-}
-
-export const client = new MongoClient(uri);
-let connectionStatus = false;
-client.on("connectionReady", () => {
-  console.log("Connected to MongoDB.");
-  connectionStatus = true;
-});
-client.on("connectionClosed", () => {
-  console.log("Disconnected from MongoDB");
-  connectionStatus = false;
-});
 export class DB {
   constructor() {}
 
   async CheckIfUserBlacklisted(IDsToCheck: string[]): Promise<ListedUser[]> {
     try {
-      if (!connectionStatus) {
-        await client.connect();
-      }
+      const blacklist: ListedUser[] = await readFile(blacklistfile); // Corrected this line
+      return blacklist.filter((user) => IDsToCheck.includes(user.user_id));
     } catch (error) {
-      console.error("Error connecting to MongoDB:", error);
-      process.exit(1);
-    }
-
-    const database = client.db("BlackhandDB");
-    const collection = database.collection("Blacklist");
-
-    try {
-      const query = { "reported_user.userid": { $in: IDsToCheck } };
-      const result = await collection.find(query).toArray();
-      const listedUsers = result.map((doc) => ({
-        reported_user: {
-          user_id: doc.reported_user.userid,
-        },
-        user_who_reported: {
-          user_id: doc.user_who_reported.userid,
-        },
-        proof: doc.proof,
-        description: doc.description,
-        severity: doc.severity,
-      }));
-      return listedUsers;
-    } catch (error) {
-      console.error("Error getting results.");
+      console.error("Error scanning for users", error);
       process.exit(1);
     }
   }
 
-  // add_new_banned_user(info: ListedUser) {}
-
-  async get_server_settings(guild_id: string): Promise<serverSettings> {
+  async add_report(listedUser: ListedUser) {
     try {
-      if (!connectionStatus) {
-        await client.connect();
-      }
-    } catch (error) {
-      console.error("Error connecting to MongoDB:", error);
+      await writeFile(blacklistfile, listedUser);
+      return;
+    } catch (err) {
+      console.error("An error occurred.", err);
       process.exit(1);
     }
-    const database = client.db("BlackhandDB");
-    const collection = database.collection("ServerSettings");
-    const result = await collection.findOne({ guild_id: guild_id });
+  }
+
+  async get_server_settings(guild_id: string): Promise<serverSettings> {
+    const defaultSettings: serverSettings = {
+      guildid: guild_id,
+      warn_at: 3,
+      ban_at: 7,
+      autoban: true,
+    };
+
     try {
-      if (!result) {
-        console.log("Creating a new document...");
-        const serverSettings = {
-          // default values
-          warn_at: 3,
-          ban_at: 7,
-          autoban: true,
-        };
-        await collection.insertOne(serverSettings);
-        return serverSettings;
+      const jsonParsed = await readFile(settingsfile);
+      const matchingSettings = jsonParsed.find(
+        (settings: serverSettings) => settings.guildid === guild_id
+      );
+
+      if (!matchingSettings) {
+        console.log(
+          `No settings found for guild ID ${guild_id}. Creating an entry with default settings...`
+        );
+
+        jsonParsed.push(defaultSettings);
+        await writeFile(settingsfile, jsonParsed);
+
+        return defaultSettings;
       } else {
-        const serverSettings = {
-          warn_at: result.warn_at,
-          ban_at: result.ban_at,
-          autoban: result.autoban,
-        };
-        return serverSettings;
+        return matchingSettings;
       }
     } catch (error) {
-      console.error("Error in MongoDB.");
+      console.error("Error reading the JSON file for settings.", error); // Added the error object to the log
       process.exit(1);
     }
   }
@@ -118,58 +104,8 @@ export class DB {
     ban_at: number,
     autoban: boolean
   ) {
-    try {
-      if (!connectionStatus) {
-        await client.connect();
-      }
-    } catch (error) {
-      console.error("Error connecting to MongoDB:", error);
-      process.exit(1);
-    }
-
-    const database = client.db("BlackhandDB");
-    const collection = database.collection("ServerSettings");
-    const query = { guild_id: guild_id };
-
-    const update = {
-      $set: {
-        warn_at: warn_at,
-        ban_at: ban_at,
-        autoban: autoban,
-      },
-    };
-    collection.updateOne(query, update)
     // add prompt to verify the changes by showing old and new configs
   }
 
-  // change_server_setting(server_id:string, i: string value: string) {
-  // f(i) // you are passing i to mongo.update when finding for key name and pass value there
-  // Not Actual
-  //   switch i {
-  //     case "way_of_communication_with_users_from_blacklist":
-  //       // code
-
-  //       break;
-  //     case "scale":
-  //       // code
-  //       break
-  //       /// ...
-  //   }
-  // }
-
-  // add_user(id: number, nick: string, reason_of_ban: string) {
-
-  // }
-  // delete_user_by_id(id: number) {
-
-  // }
-  // delete_user_by_nickname(id: number) {
-
-  // }
-  // get_black_list(): UserBanInfo { // prints all nicknames of banned peoples and reason
-  //     return {
-  //         nickname: "",
-  //         reason_of_ban: "",
-  //     }
-  // }
+  // delete_user(id: string) {
 }

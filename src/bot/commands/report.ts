@@ -2,11 +2,11 @@ import {
   ApplicationCommandOptionType,
   Client,
   CommandInteraction,
-  MessageCollector,
+  User,
 } from "discord.js";
 import { Command } from "./command";
-import { table } from "../stages/current_statement";
-
+import { db } from "../../index";
+import { ListedUser } from "../../db/interfaces";
 export const Report: Command = {
   name: "report",
   description: "Report user",
@@ -17,22 +17,54 @@ export const Report: Command = {
       description: "Username",
       required: true,
     },
+    {
+      type: ApplicationCommandOptionType.String,
+      name: "description",
+      description: "Provide a description of the offense.",
+      required: true,
+    },
+    {
+      type: ApplicationCommandOptionType.String,
+      name: "proof",
+      description: "Provide an image proving your issue.",
+      required: true,
+    },
   ],
   run: async (client: Client, i: CommandInteraction) => {
-    if (i.user.bot) return;
     const user = i.options.getUser("username");
+    const proof = JSON.stringify(i.options.get("description")?.value);
+    const description = JSON.stringify(i.options.get("proof")?.value);
     if (!user) {
-      await i.followUp({ ephemeral: true, content: "User does not exist." })
+      await i.followUp({ ephemeral: false, content: "User does not exist." });
       return;
     }
+
     if (user.bot) {
-      await i.followUp({ ephemeral: true, content: "You can't report a bot." });
+      await i.followUp({
+        ephemeral: false,
+        content: "You can't report a bot.",
+      });
       return;
     }
-    await i.followUp({
-      ephemeral: true,
-      content: `${i.options.getUser("username")?.username}`,
-    });
-    table.get_user_statement(i.user.id).current_position = [1, 0];
+
+    const alreadyreported = await db.CheckIfUserBlacklisted([user.id]);
+    const UserToReport: ListedUser = {
+      user_id: user.id,
+      proof: proof.replace(/^"|"$/g, ""), // it was going like '"(value)"'
+      description: description.replace(/^"|"$/g, ""),
+      severity: 1,
+    };
+    if (alreadyreported.length === 0) {
+      db.add_report(UserToReport);
+      await i.followUp({
+        ephemeral: false,
+        content: "Thank you for reporting the user.",
+      });
+    } else {
+      await i.followUp({
+        ephemeral: false,
+        content: "This user has already been reported.",
+      });
+    }
   },
 };
