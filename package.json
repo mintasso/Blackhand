@@ -1,7 +1,7 @@
 {
-  "name": "js",
+  "name": "Blackhand",
   "version": "1.0.0",
-  "description": "",
+  "description": "Discord bot using a centralized blacklist to remove offending users from guilds.",
   "main": "index.js",
   "scripts": {
     "test": "mocha --require ts-node/register src/**/*.spec.ts",
@@ -10,9 +10,23 @@
     "watch": "tsc --watch",
     "compile": "rimraf ./build && tsc"
   },
+  "bugs": {
+    "url": "https://github.com/mintasso/blackhand/issues",
+    "email": "blackhand@mintasso.xyz"
+  }
+  "homepage": "https://blackhand.mintasso.xyz"
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "authors": [
+    {
+    "name": "mintasso",
+    "email": "me@mintasso.xyz",
+    "url": "https://mintasso.xyz"
+    },
+    {
+      "name": "Yaroslav2133"
+      "url": "https://github.com/Yaroslav1233"
+      }],
+  "license": "GPL-3.0",
   "dependencies": {
     "discord.js": "^14.13.0",
     "dotenv": "^16.3.1",
