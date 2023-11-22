@@ -1,5 +1,5 @@
 {
-  "name": "Blackhand",
+  "name": "blackhand",
   "version": "1.0.0",
   "description": "Discord bot using a centralized blacklist to remove offending users from guilds.",
   "main": "index.js",
@@ -13,8 +13,8 @@
   "bugs": {
     "url": "https://github.com/mintasso/blackhand/issues",
     "email": "blackhand@mintasso.xyz"
-  }
-  "homepage": "https://blackhand.mintasso.xyz"
+  },
+  "homepage": "https://blackhand.mintasso.xyz",
   "keywords": [],
   "authors": [
     {
@@ -23,7 +23,7 @@
     "url": "https://mintasso.xyz"
     },
     {
-      "name": "Yaroslav2133"
+      "name": "Yaroslav1233",
       "url": "https://github.com/Yaroslav1233"
       }],
   "license": "GPL-3.0",
@@ -38,7 +38,6 @@
   "devDependencies": {
     "@types/chai": "^4.3.6",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^20.6.3",
     "@types/sinon": "^10.0.16",
     "chai": "^4.3.8",
     "mocha": "^10.2.0",
