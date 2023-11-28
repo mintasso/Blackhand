@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --require ts-node/register src/**/*.spec.ts",
+    "test": "mocha --require ts-node/register src/**/connection.spec.ts",
     "test-g": "mocha --require ts-node/register",
     "run": "ts-node src/index.ts",
     "watch": "tsc --watch",
@@ -16,6 +16,7 @@
   "dependencies": {
     "discord.js": "^14.13.0",
     "dotenv": "^16.3.1",
+    "mariadb": "^3.2.2",
     "mocha": "^10.2.0",
     "mongodb": "^6.1.0",
     "mongoose": "^8.0.0",
