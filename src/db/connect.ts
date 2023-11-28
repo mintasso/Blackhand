@@ -13,7 +13,7 @@ export async function connect() {
 }
 
 
-export async function connect_with_pool() {
+export async function create_pool() {
     const conn = await mariadb.createPool({
         host: process.env.DB_HOST,
         user: process.env.DB_USERNAME,

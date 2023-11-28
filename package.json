@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --require ts-node/register src/**/connection.spec.ts",
+    "test": "mocha --require ts-node/register src/**/get_listed_users.spec.ts",
     "test-g": "mocha --require ts-node/register",
     "run": "ts-node src/index.ts",
     "watch": "tsc --watch",
